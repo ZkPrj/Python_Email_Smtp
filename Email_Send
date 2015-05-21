@@ -1,0 +1,31 @@
+from smtplib import SMTP
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email import encoders
+from email.mime.multipart import MIMEMultipart
+
+
+def send_mail():
+    msg = MIMEMultipart();
+    txt = MIMEText("hello, zhangkai!");
+    msg['From'] = "xxxxx<xxxxx@163.com>";
+    msg['To'] = "xxxxxxx@163.com";
+    msg['Subject'] = '发送图片';
+    msg.attach(txt);#添加内容
+    image_part = MIMEBase('image',  'jpeg');
+    l_file_name = "Blue hills.jpg";
+    l_file = open("d:\\" + l_file_name,  "rb");
+    #image_part = MIMEImage(l_file.read());
+    image_part.set_payload(l_file.read());
+    encoders.encode_base64(image_part);
+    l_file.close();
+    image_part.add_header("Content-Disposition",  "attachment",  filename = l_file_name);  #附件属性
+    msg.attach(image_part);  #添加到容器中
+    l_smtp = SMTP();
+    l_smtp.connect("smtp.163.com");   #连接邮件服务器
+    l_smtp.login("xxxxx@163.com",  "xxxxxxx");  #登录验证
+    l_smtp.sendmail("xxxx@163.com",  "xxxxxx@163.com",  msg.as_string());  #发送邮件
+    l_smtp.quit();
+    
+if __name__ == "__main__":
+    send_mail();
